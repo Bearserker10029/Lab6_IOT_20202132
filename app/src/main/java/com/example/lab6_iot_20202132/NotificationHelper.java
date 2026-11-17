@@ -9,15 +9,15 @@ import androidx.core.app.NotificationCompat;
 
 public class NotificationHelper {
 
-    private static final String CANAL_ID = "canal_pronosticos";
+    private static final String CANAL_ID = "canal_sesiones";
     private static final int NOTIF_ID = 1001;
 
     public static void crearCanal(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel canal = new NotificationChannel(
-                    CANAL_ID, "Pronosticos",
+                    CANAL_ID, "Sesiones de estudio",
                     NotificationManager.IMPORTANCE_DEFAULT);
-            canal.setDescription("Notificaciones de pronosticos del Mundial");
+            canal.setDescription("Notificaciones de sesiones de estudio");
             NotificationManager manager = context.getSystemService(NotificationManager.class);
             manager.createNotificationChannel(canal);
         }

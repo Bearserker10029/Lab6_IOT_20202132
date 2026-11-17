@@ -6,34 +6,28 @@ public class Sesion {
 
     private String curso;
     private String tipo;
-    private Timestamp fechaPartido;
-    private int horas;
-    private String estado;
+    private Timestamp fecha;
+    private double horas;
 
     public Sesion() {
     }
 
-    public Sesion(String curso, String tipo, Timestamp fechaPartido,
-                  int horas) {
+    public Sesion(String curso, String tipo, Timestamp fecha, double horas) {
         this.curso = curso;
         this.tipo = tipo;
-        this.fechaPartido = fechaPartido;
+        this.fecha = fecha;
         this.horas = horas;
-        this.estado = "Pendiente";
     }
 
-    public String getcurso() { return curso; }
-    public void setcurso(String curso) { this.curso = curso; }
+    public String getCurso() { return curso; }
+    public void setCurso(String curso) { this.curso = curso; }
 
-    public String gettipo() { return tipo; }
-    public void settipo(String tipo) { this.tipo = tipo; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
-    public Timestamp getFechaPartido() { return fechaPartido; }
-    public void setFechaPartido(Timestamp fechaPartido) { this.fechaPartido = fechaPartido; }
+    public Timestamp getFecha() { return fecha; }
+    public void setFecha(Timestamp fecha) { this.fecha = fecha; }
 
-    public int gethoras() { return horas; }
-    public void sethoras(int horas) { this.horas = horas; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public double getHoras() { return horas; }
+    public void setHoras(double horas) { this.horas = horas; }
 }

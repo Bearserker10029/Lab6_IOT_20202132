@@ -40,7 +40,7 @@ public class SesionesFragment extends Fragment implements SesionAdapter.OnSesion
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         ref = FirebaseFirestore.getInstance()
-                .collection("usuarios").document(uid).collection("pronosticos");
+                .collection("usuarios").document(uid).collection("sesiones");
 
         adapter = new SesionAdapter(requireContext(), lista, ids, this);
         binding.rvPronosticos.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -55,14 +55,13 @@ public class SesionesFragment extends Fragment implements SesionAdapter.OnSesion
     @Override
     public void onStart() {
         super.onStart();
-        registration = ref.orderBy("fechaPartido")
+        registration = ref.orderBy("fecha")
                 .addSnapshotListener((snapshots, e) -> {
-                    if (e != null) return;
+                    if (e != null || snapshots == null) return;
                     lista.clear();
                     ids.clear();
                     for (QueryDocumentSnapshot doc : snapshots) {
-                        Sesion p = doc.toObject(Sesion.class);
-                        lista.add(p);
+                        lista.add(doc.toObject(Sesion.class));
                         ids.add(doc.getId());
                     }
                     adapter.notifyDataSetChanged();
@@ -78,31 +77,30 @@ public class SesionesFragment extends Fragment implements SesionAdapter.OnSesion
 
     @Override
     public void onEditar(int position) {
-        Sesion p = lista.get(position);
+        Sesion s = lista.get(position);
         Intent intent = new Intent(getContext(), FormularioActivity.class);
         intent.putExtra("modo", "editar");
         intent.putExtra("id", ids.get(position));
-        intent.putExtra("curso", p.getcurso());
-        intent.putExtra("tipo", p.gettipo());
-        intent.putExtra("horas", p.gethoras());
-        intent.putExtra("fecha", p.getFechaPartido().toDate().getTime());
-        intent.putExtra("estado", p.getEstado());
+        intent.putExtra("curso", s.getCurso());
+        intent.putExtra("tipo", s.getTipo());
+        intent.putExtra("horas", s.getHoras());
+        intent.putExtra("fecha", s.getFecha().toDate().getTime());
         startActivity(intent);
     }
 
     @Override
     public void onEliminar(int position) {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Eliminar pronostico")
-                .setMessage("Se eliminara el pronostico "
-                        + lista.get(position).getcurso() + " vs "
-                        + lista.get(position).gettipo() + ". Esta operacion no se puede deshacer.")
+                .setTitle("Eliminar sesion")
+                .setMessage("Se eliminara la sesion de "
+                        + lista.get(position).getCurso() + " del "
+                        + lista.get(position).getFecha().toDate() + ". Esta operacion no se puede deshacer.")
                 .setPositiveButton("Eliminar", (dialog, which) ->
                         ref.document(ids.get(position)).delete()
                                 .addOnSuccessListener(unused ->
                                         NotificationHelper.notificar(requireContext(),
-                                                "Pronostico eliminado",
-                                                "El pronostico fue eliminado correctamente."))
+                                                "Sesion eliminada",
+                                                "La sesion fue eliminada correctamente."))
                                 .addOnFailureListener(e ->
                                         Toast.makeText(getContext(), "Error al eliminar",
                                                 Toast.LENGTH_SHORT).show()))

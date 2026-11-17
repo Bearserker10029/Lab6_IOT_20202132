@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,39 +43,36 @@ public class SesionAdapter extends RecyclerView.Adapter<SesionAdapter.SesionView
 
     @Override
     public void onBindViewHolder(@NonNull SesionViewHolder holder, int position) {
-        Sesion p = lista.get(position);
+        Sesion s = lista.get(position);
 
-        holder.binding.tvSelecciones.setText(p.getcurso());
-        holder.binding.tvMarcador.setText(p.gethoras());
+        holder.binding.tvSelecciones.setText(s.getCurso());
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        holder.binding.tvFecha.setText("Fecha: " + sdf.format(p.getFechaPartido().toDate()));
+        holder.binding.tvFecha.setText(sdf.format(s.getFecha().toDate())
+                + " \u00b7 " + formatearHoras(s.getHoras()) + " h");
 
-        holder.binding.tvEstado.setText(p.getEstado());
-        switch (p.getEstado()) {
-            case "Acertado": holder.binding.tvEstado.setTextColor(Color.parseColor("#2E7D32")); break;
-            case "Fallado":  holder.binding.tvEstado.setTextColor(Color.parseColor("#C62828")); break;
-            default:         holder.binding.tvEstado.setTextColor(Color.parseColor("#F9A825")); break;
+        holder.binding.tvEstado.setText(s.getTipo());
+        switch (s.getTipo()) {
+            case "Teoria":
+                holder.binding.tvEstado.setTextColor(Color.parseColor("#1565C0"));
+                break;
+            case "Practica":
+                holder.binding.tvEstado.setTextColor(Color.parseColor("#EF6C00"));
+                break;
+            default:
+                holder.binding.tvEstado.setTextColor(Color.parseColor("#2E7D32"));
+                break;
         }
 
-        holder.binding.cardSesion.setOnClickListener(v -> {
-            if ("Pendiente".equals(p.getEstado())) {
-                listener.onEditar(position);
-            } else {
-                Toast.makeText(context, "El Sesion esta " + p.getEstado()
-                        + " y ya no se puede editar", Toast.LENGTH_SHORT).show();
-            }
-        });
+        holder.binding.btnEditar.setOnClickListener(v -> listener.onEditar(position));
+        holder.binding.btnEliminar.setOnClickListener(v -> listener.onEliminar(position));
+    }
 
-        holder.binding.cardSesion.setOnLongClickListener(v -> {
-            if ("Pendiente".equals(p.getEstado())) {
-                listener.onEliminar(position);
-            } else {
-                Toast.makeText(context, "Solo se pueden eliminar Sesions pendientes",
-                        Toast.LENGTH_SHORT).show();
-            }
-            return true;
-        });
+    private String formatearHoras(double horas) {
+        if (horas == Math.floor(horas)) {
+            return String.valueOf((int) horas);
+        }
+        return String.valueOf(horas);
     }
 
     @Override
